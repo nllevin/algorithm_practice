@@ -24,27 +24,42 @@
 // Output: 28
 
 
-// memoized:
-const uniquePaths = (m, n, memo = {}) => {
-  if (m === 1 && n === 1) return 1;
-  const key = String(m) + "," + String(n);
-  if (key in memo) return memo[key];
+// tabulation:
+const uniquePaths = (m, n) => {
+  const table = Array.from({ length: n }, () => new Array(m).fill(0));
+  table[0][0] = 1;
 
-  let count = 0;
-  if (m > 1) {
-    const subRes = uniquePaths(m - 1, n, memo);
-    const key = String(m - 1) + "," + String(n);
-    memo[key] = subRes;
-    count += subRes;
+  for (let row = 0; row < n; row++) {
+    for (let col = 0; col < m; col++) {
+      if (row === 0 && col === 0) continue;
+      if (row > 0) table[row][col] += table[row - 1][col];
+      if (col > 0) table[row][col] += table[row][col - 1];
+    }
   }
-  if (n > 1) {
-    const subRes = uniquePaths(m, n - 1, memo);
-    const key = String(m) + "," + String(n - 1);
-    memo[key] = subRes;
-    count += subRes;
-  }
-  return count;
+  return table[n - 1][m - 1];
 };
+
+// memoized:
+// const uniquePaths = (m, n, memo = {}) => {
+//   if (m === 1 && n === 1) return 1;
+//   const key = String(m) + "," + String(n);
+//   if (key in memo) return memo[key];
+
+//   let count = 0;
+//   if (m > 1) {
+//     const subRes = uniquePaths(m - 1, n, memo);
+//     const key = String(m - 1) + "," + String(n);
+//     memo[key] = subRes;
+//     count += subRes;
+//   }
+//   if (n > 1) {
+//     const subRes = uniquePaths(m, n - 1, memo);
+//     const key = String(m) + "," + String(n - 1);
+//     memo[key] = subRes;
+//     count += subRes;
+//   }
+//   return count;
+// };
 
 // without memoization:
 // const uniquePaths = (m, n) => {
